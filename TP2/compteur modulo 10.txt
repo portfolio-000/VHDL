@@ -1,0 +1,49 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity cpmod_10 is
+    port(
+        clk : in std_logic;
+        compt : out std_logic
+    );
+end cpmod_10;
+
+----------------------------------ARCHITECTURE-----------------------------------
+architecture arch_cpmod_10 of cpmod_10 is 
+    -- ARCHITECTURE declarative part
+        signal q : std_logic_vector(3 downto 0) := "0000";
+        signal clk_div : std_logic; -- wire used to connect the 2 components
+		  signal compt_internal : std_logic_vector(3 downto 0) := "0000";
+    -- ARCHITECTURE declarative part
+begin
+    -- ARCHITECTURE statement part
+    -- ARCHITECTURE description part
+    divise_freq : process(clk)
+    begin
+        if rising_edge (clk) then
+            q <= q + 1;
+            clk_div <= q(3);
+
+            if q = "1111" then
+                q <= "0000";
+            end if;  
+            
+        end if;
+    end process divise_freq;
+
+    cptbcd : process(clk_div)
+    begin
+        if rising_edge (clk_div) then
+            compt_internal <= compt_internal + 1;
+				compt <= compt_internal(3);
+				
+            if compt_internal = "1111" then
+                compt_internal <= "0000";
+            end if;  
+  
+        end if;
+    end process cptbcd;
+    -- ARCHITECTURE description part
+    -- ARCHITECTURE statement part
+end arch_cpmod_10;

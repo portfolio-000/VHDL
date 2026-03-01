@@ -1,0 +1,81 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity cpmod_10 is
+    port(
+        clk : in std_logic;
+        compt : out std_logic;
+		  b : buffer std_logic_vector(0 to 6);
+		  c : out std_logic_vector(0 to 6)
+    );
+end cpmod_10;
+
+----------------------------------ARCHITECTURE-----------------------------------
+architecture arch_cpmod_10 of cpmod_10 is 
+    -- ARCHITECTURE declarative part
+        signal q : std_logic_vector(24 downto 0) := "0000000000000000000000000";
+        signal clk_div : std_logic;
+		  signal compt_internal : std_logic_vector(3 downto 0) := "0000";
+		  signal a : std_logic_vector(3 downto 0) := "0000";
+		  signal  compt_7seg : std_logic;
+    -- ARCHITECTURE declarative part
+begin
+    -- ARCHITECTURE statement part
+    -- ARCHITECTURE description part
+    divise_freq : process(clk)
+    begin
+        if rising_edge (clk) then
+            q <= q + 1;
+            clk_div <= q(24);
+
+            if q = "111111111111111111111111" then
+                q <= "0000000000000000000000000";
+            end if;  
+            
+        end if;
+    end process divise_freq;
+
+    cptbcd : process(clk_div)
+    begin
+        if rising_edge (clk_div) then
+            compt_internal <= compt_internal + 1;
+				compt <= compt_internal(3);
+				compt_7seg <= compt_internal(3);
+				
+            if compt_internal = "1111" then
+                compt_internal <= "0000";
+            end if;  
+  
+        end if;
+    end process cptbcd;
+	 
+	 decodeur_7seg : process(compt_7seg)
+    begin
+        if rising_edge (compt_7seg) then
+            a <= a + 1;
+				
+            if a = "1111" then
+                a <= "0000";
+            end if;  
+  
+        end if;
+    end process decodeur_7seg;
+	 
+	  with a select
+        -- on peut aussi faire en hex. ex : b <= x"FF"
+            b <= "0000000" when "0000", -- 0
+                 "0110000" when "0001", -- 1
+                 "1101101" when "0010", -- 2
+                 "1111001" when "0011", -- 3
+                 "0110011" when "0100", -- 4
+                 "1011011" when "0101", -- 5
+                 "0011111" when "0110", -- 6
+                 "1110000" when "0111", -- 7
+                 "1111111" when "1000", -- 8
+                 "1110011" when "1001", -- 9
+                 "0000000" when others;
+        c <= not(b);
+    -- ARCHITECTURE description part
+    -- ARCHITECTURE statement part
+end arch_cpmod_10;

@@ -1,0 +1,21 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity prise_en_main is
+    port(
+        a : in std_logic;
+        b : in std_logic;
+        s : out std_logic;
+        r : out std_logic
+    );
+end prise_en_main;
+
+architecture arch_prise_en_main of prise_en_main is 
+begin
+    process(a , b) is
+    begin
+        s <= a xor b;
+        r <= a and b;
+    end process;
+end arch_prise_en_main;

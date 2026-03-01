@@ -1,0 +1,27 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity div25 is
+    port(
+        clk : in std_logic;
+        clk_div : out std_logic
+    );
+end div25;
+
+architecture arch_div25 of div25 is 
+    signal q : std_logic_vector(24 downto 0) := "0000000000000000000000000";
+begin
+    divise_freq : process(clk)
+    begin
+        if rising_edge (clk) then -- d'après la simulation resing et falling_edge sont la même chose		  
+            q <= q + 1;		  -- le q s'incrémente toujours au front descendant : pas bon
+            clk_div <= q(24);
+
+            if q = "1111111111111111111111111" then
+                q <= "0000000000000000000000000";
+            end if;  
+            
+        end if;
+    end process divise_freq;
+end arch_div25;
