@@ -1,0 +1,50 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity machine is
+    port (
+        DPE, RP, PC, FP, BPR : in std_logic;
+        clk : in std_logic;
+        LT, AL, BT : out std_logic
+    );
+end machine;
+
+architecture arch_machine of machine is
+    -- déclaration d’un nouveau type représentant la liste des noms des états possibles
+    type etats_possibles is (INIT, REMPLI, PESAGE, POIDS_OK, POIDS_NOT_OK);
+    -- déclaration d’un signal pouvant prendre pour valeur un des noms parmi les états possibles
+    signal etat: etats_possibles;
+begin
+    -- description de l’évolution de la machine à états
+    evolution : process (clk)
+    begin
+        if rising_edge(clk) then
+            case etat is
+                when INIT =>
+                    if (DPE='1') then etat <= REMPLI;
+                    end if;
+                when REMPLI =>
+                    if (RP='1') then etat <= PESAGE;
+                    end if ;
+                when PESAGE =>
+                    if (PC='1' and FP='1') then etat <= POIDS_OK;
+                    end if;
+                    if (PC='0' and FP='1') then etat <= POIDS_NOT_OK;
+                    end if;
+                when POIDS_OK =>
+                    if (RP='0') then etat <= REMPLI;
+                    end if ;
+                when POIDS_NOT_OK =>
+                    if (BPR='1' and FP='1' and PC='1') then etat <= REMPLI;
+                    end if ;
+            end case;
+        end if;
+    end process evolution;
+
+    -- description de la valeur des sorties pour chaque état
+    LT <= '1' when (etat = REMPLI) or (etat = PESAGE) or (etat = POIDS_OK) or (etat = POIDS_NOT_OK) else '0';
+    AL <= '1' when (etat = POIDS_NOT_OK) else '0';
+    BT <= '1' when (etat = INIT) or (etat = REMPLI) or (etat = POIDS_OK) else '0';
+
+end arch_machine;
