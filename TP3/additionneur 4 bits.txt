@@ -1,0 +1,67 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity add_4bit is
+		port(
+			d : in std_logic_vector(3 downto 0);
+			b : in std_logic_vector(3 downto 0);
+			q : out std_logic_vector(3 downto 0);
+			ret_prec0 : in std_logic;
+			retenue3 : out std_logic
+		);
+end add_4bit;
+
+architecture arch_add_4bit of add_4bit is
+    component add_1bit is
+        port(
+           m : in std_logic;
+			  n : in std_logic;
+			  ret_prec : in std_logic;
+			  retenue : out std_logic;
+			  somme : out std_logic
+        );
+    end component;
+	 
+    signal ret_prec1 : std_logic;
+    signal ret_prec2 : std_logic;
+    signal ret_prec3 : std_logic;
+	 
+begin
+    c0 : add_1bit
+    port map(
+        m => d(0), -- a
+        n => b(0), -- b
+		  ret_prec => ret_prec0,
+        retenue => ret_prec1,
+        somme => q(0)
+    );
+
+    c1 : add_1bit
+    port map(
+        m => d(1), -- a
+        n => b(1), -- b
+		  ret_prec => ret_prec1,
+        retenue => ret_prec2,
+        somme => q(1)
+    );
+
+    c2 : add_1bit
+    port map(
+        m => d(2), -- a
+        n => b(2), -- b
+		  ret_prec => ret_prec2,
+        retenue => ret_prec3,
+        somme => q(2)
+    );
+	 
+    c3 : add_1bit
+    port map(
+        m => d(3), -- a
+        n => b(3), -- b
+		  ret_prec => ret_prec3,
+        retenue => retenue3,
+        somme => q(3)
+    );
+
+end arch_add_4bit;
