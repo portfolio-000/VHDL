@@ -1,0 +1,3 @@
+https://digilent.com/reference/programmable-logic/guides/getting-started-with-vhdl?srsltid=AfmBOoojnkC0B0u6xfu25IL0CJff0D7nY21Ewo4Ndet8GuJ6pGd3dxhy
+
+https://vhdlwhiz.com/basic-vhdl-tutorials/
